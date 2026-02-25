@@ -1,0 +1,134 @@
+================================================================================
+NIZAMABAD SERVICES – DATA COLLECTION END TO END
+================================================================================
+This file describes all data collected, stored, and sent across the app from
+frontend → API → database, and browser storage.
+================================================================================
+
+--------------------------------------------------------------------------------
+1. BROWSER (CLIENT) – LOCAL STORAGE
+--------------------------------------------------------------------------------
+Data stored only on the user's device (not sent to server unless used in API).
+
+| Key                          | Values / Type   | Where set              | Purpose                    |
+|------------------------------|-----------------|------------------------|----------------------------|
+| nizamabad-services-lang      | "en" or "te"    | Language toggle (i18n) | UI language preference     |
+| nizamabad-services-area      | "" or area name | Area selector          | Location filter preference |
+| nizamabad-services-phone     | Phone string    | My Requests page       | To load "My Requests" list |
+
+Area values: "Nizamabad city", "Armoor", "Bodhan", "Nizamabad rural", "Other"
+Empty area ("") = "All areas".
+
+--------------------------------------------------------------------------------
+2. FRONTEND – DATA ENTERED BY USER
+--------------------------------------------------------------------------------
+
+A) PROVIDER REGISTRATION (Menu → Register as provider)
+   Form submits to: POST /providers
+
+   | Field          | Required | Max length | Example / Notes        |
+   |----------------|----------|------------|------------------------|
+   | name           | Yes      | 200        | Provider full name     |
+   | phone          | Yes      | 10–15      | 9876543210             |
+   | category_slug  | Yes      | 100        | e.g. plumbing, electrician |
+   | area           | Yes      | 100        | One of the 5 areas     |
+
+B) MY REQUESTS – PHONE LOOKUP
+   User enters phone to fetch their requests. Phone is sent as query param to
+   GET /requests?phone=... and also saved in localStorage (see above).
+
+   | Data    | Sent to API        | Stored in DB? |
+   |---------|--------------------|---------------|
+   | phone   | GET /requests?phone= | No (used only to filter existing rows) |
+
+C) SERVICE REQUEST (API ready; form not in UI yet)
+   When you add a "Create request" form, it would send to POST /requests:
+
+   | Field        | Required | Max length | Notes                |
+   |--------------|----------|------------|----------------------|
+   | name         | Yes      | 200        | Customer name        |
+   | phone        | Yes      | 10–15      | Customer phone       |
+   | address      | Yes      | 500        | Service address     |
+   | details      | No       | 1000       | Extra description   |
+   | service_slug | Yes      | 100        | e.g. plumbing       |
+
+--------------------------------------------------------------------------------
+3. API (BACKEND) – ENDPOINTS
+--------------------------------------------------------------------------------
+
+| Method | Endpoint                    | Data IN (body or query)     | Data OUT / Effect              |
+|--------|-----------------------------|-----------------------------|--------------------------------|
+| GET    | /health                     | None                        | { status, time }               |
+| POST   | /requests                   | name, phone, address, details?, service_slug | New row in requests; returns request_id |
+| GET    | /requests?phone=...         | phone (query)               | List of requests for that phone |
+| POST   | /providers                  | name, phone, category_slug, area | New row in providers; returns provider_id |
+| GET    | /providers/{category_slug}  | category_slug (path), area? (query) | List of providers (filtered by area if given) |
+
+--------------------------------------------------------------------------------
+4. DATABASE (SUPABASE / POSTGRESQL) – TABLES
+--------------------------------------------------------------------------------
+
+TABLE: public.requests
+(Service requests from customers – one row per request.)
+
+| Column       | Type         | Required | Default      | Description           |
+|--------------|--------------|----------|--------------|-----------------------|
+| id           | uuid         | auto     | gen_random_uuid() | Primary key     |
+| name         | text         | Yes      | –            | Customer name         |
+| phone        | text         | Yes      | –            | Customer phone        |
+| address      | text         | Yes      | –            | Service address      |
+| details      | text         | No       | ''           | Extra details         |
+| service_slug | text         | Yes      | –            | e.g. plumbing        |
+| status       | text         | Yes      | 'pending'   | pending, completed…  |
+| created_at   | timestamptz | Yes      | now()        | When request was made |
+
+TABLE: public.providers
+(Service providers – one row per registered provider.)
+
+| Column        | Type         | Required | Default      | Description           |
+|---------------|--------------|----------|--------------|-----------------------|
+| id            | uuid         | auto     | gen_random_uuid() | Primary key     |
+| name          | text         | Yes      | –            | Provider name         |
+| phone         | text         | Yes      | –            | Provider phone        |
+| category_slug | text         | Yes      | –            | e.g. plumbing        |
+| area          | text         | Yes      | –            | Service area          |
+| rating        | numeric(3,2) | Yes      | 0            | Average rating        |
+| rating_count  | int          | Yes      | 0            | Number of ratings     |
+| verified      | boolean      | Yes      | false        | Verified badge        |
+| created_at    | timestamptz | Yes      | now()        | When registered       |
+
+--------------------------------------------------------------------------------
+5. END-TO-END FLOW SUMMARY
+--------------------------------------------------------------------------------
+
+Provider registration:
+  User (form) → name, phone, category_slug, area
+    → POST /providers (backend)
+    → Supabase: public.providers (new row)
+
+My Requests:
+  User enters phone → GET /requests?phone=...
+    → Backend reads public.requests where phone = ?
+    → Returns list to frontend (phone stored in localStorage for next time)
+
+Service request (when form is added):
+  User (form) → name, phone, address, details?, service_slug
+    → POST /requests (backend)
+    → Supabase: public.requests (new row)
+
+List providers (by category + optional area):
+  User selects category (and optionally area in header/Home)
+    → GET /providers/{category_slug}?area=... (area from context/localStorage)
+    → Backend reads public.providers (filtered by category_slug and area)
+    → Returns list to frontend
+
+--------------------------------------------------------------------------------
+6. DATA NOT COLLECTED
+--------------------------------------------------------------------------------
+- No login/signup (no email, password, or auth identity stored).
+- No payment or card details.
+- No device ID or analytics IDs in this document (add if you integrate analytics).
+
+================================================================================
+End of document
+================================================================================
