@@ -96,3 +96,12 @@ def test_requests_list_requires_phone(client: TestClient):
     """GET /requests without phone returns 422."""
     response = client.get("/requests")
     assert response.status_code == 422
+
+
+def test_health_db_returns_connected_when_mock_works(client: TestClient):
+    """GET /health/db returns 200 and database connected when Supabase is available (mocked)."""
+    response = client.get("/health/db")
+    assert response.status_code == 200
+    data = response.json()
+    assert data.get("status") == "ok"
+    assert data.get("database") == "connected"

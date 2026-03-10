@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scan to open on mobile</title>
+  <style>
+    body { font-family: system-ui, sans-serif; text-align: center; padding: 2rem; background: #f1f5f9; }
+    h1 { font-size: 1.25rem; color: #334155; margin-bottom: 0.5rem; }
+    p { color: #64748b; font-size: 0.875rem; margin-bottom: 1.5rem; }
+    img { border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    a { color: #0ea5e9; word-break: break-all; }
+  </style>
+</head>
+<body>
+  <h1>Nizamabad services – open on phone</h1>
+  <p>Scan the QR code with your phone camera or a QR app</p>
+  <img id="qr" src="" alt="QR Code" width="220" height="220" />
+  <p style="margin-top: 1rem;"><a id="url" href="">Open link</a></p>
+  <script>
+  // Replace this with your computer's LAN IP if different
+  var lanIp = '10.0.0.89';
+  // Use the same port that this page is running on
+  var current = window.location;
+  var appUrl = current.protocol + '//' + lanIp + (current.port ? (':' + current.port) : '');
+
+  document.getElementById('url').href = appUrl;
+  document.getElementById('url').textContent = appUrl;
+  document.getElementById('qr').src =
+    'https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=' + encodeURIComponent(appUrl);
+  </script>
+</body>
+</html>

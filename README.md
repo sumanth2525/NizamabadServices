@@ -17,6 +17,11 @@ Customer-to-Business (C2B) local service directory for Nizamabad district, Telan
 
 See [SUPABASE_SETUP.md](./SUPABASE_SETUP.md) for details.
 
+**Test Supabase API keys** (after setting `backend/.env`):
+- **Key check:** `cd backend && python scripts/test_supabase_keys.py` — validates URL, connection, and that you're using the **service_role** key (not anon). If INSERT is blocked by RLS, it tells you to switch to the service_role key.
+- **Connection only:** `python scripts/test_db_connection.py` — quick read test.
+- **API:** Start the backend, then open `http://localhost:8000/health/db` — returns 200 if DB is connected.
+
 ### 2. Backend
 
 ```bash

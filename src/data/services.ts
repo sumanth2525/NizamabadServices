@@ -28,7 +28,7 @@ export interface ServiceItem {
 
 export const SERVICES: ServiceItem[] = [
   { slug: 'plumbing', name: 'Plumbing', nameTe: 'ప్లంబింగ్', description: 'Pipes, taps, repairs', descriptionTe: 'పైపులు, ట్యాప్‌లు, మరమ్మత్తులు', icon: Wrench, providerCount: 8, rating: 4.8 },
-  { slug: 'electrician', name: 'Electrician', nameTe: 'ఎలక్ట్రీషియన్', description: 'Wiring, fittings, repairs', descriptionTe: 'వైరింగ్, ఫిట్టింగ్‌లు', icon: Zap, providerCount: 10, rating: 4.7 },
+  { slug: 'electrician', name: 'Electrician', nameTe: 'ఎలక్ట్రీషಿಯನ್', description: 'Wiring, fittings, repairs', descriptionTe: 'వైరింగ్, ఫిట్టింగ్‌లు', icon: Zap, providerCount: 10, rating: 4.7 },
   { slug: 'vehicle-auto', name: 'Vehicle & Auto', nameTe: 'వాహనం మరియు ఆటో', description: 'Repairs, servicing', descriptionTe: 'మరమ్మత్తులు, సర్వీసింగ్', icon: Car, providerCount: 6, rating: 4.6 },
   { slug: 'home-cleaning', name: 'Home Cleaning', nameTe: 'ఇంటి శుభ్రత', description: 'Deep clean, regular', descriptionTe: 'డీప్ క్లీన్, రెగ్యులర్', icon: Home, providerCount: 7, rating: 4.5 },
   { slug: 'bathroom-tiles', name: 'Bathroom & Tiles', nameTe: 'బాత్రూమ్ మరియు టైల్స్', description: 'Tiling, bathroom work', descriptionTe: 'టైలింగ్, బాత్రూమ్ పని', icon: Bath, providerCount: 5, rating: 4.7 },

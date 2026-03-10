@@ -9,6 +9,7 @@ export const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_NUMBER || '91987654
 export const WHATSAPP_MESSAGE = import.meta.env.VITE_WHATSAPP_MESSAGE || 'Hi, I need help with a service request from Nizamabad Services app.'
 export const SUPPORT_EMAIL = import.meta.env.VITE_SUPPORT_EMAIL || 'support@nizamabadservices.com'
 export const FACEBOOK_URL = import.meta.env.VITE_FACEBOOK_URL || 'https://facebook.com/nizamabadservices'
+export const INSTAGRAM_URL = import.meta.env.VITE_INSTAGRAM_URL || 'https://instagram.com/nizamabadservices'
 
 export const DEMO_PROVIDERS_ONLINE = 12
 

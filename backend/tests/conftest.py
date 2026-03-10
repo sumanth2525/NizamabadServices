@@ -22,6 +22,9 @@ def make_mock_supabase():
     eq_return.eq.return_value.order.return_value.execute.return_value = list_result
     mock.table.return_value.select.return_value.eq.return_value = eq_return
 
+    # select("id").limit(1).execute() for /health/db
+    mock.table.return_value.select.return_value.limit.return_value.execute.return_value = MagicMock(data=[])
+
     return mock
 
 

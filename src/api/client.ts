@@ -1,4 +1,6 @@
-const BASE = import.meta.env.VITE_API_URL || ''
+const BASE =
+  import.meta.env.VITE_API_URL ||
+  (import.meta.env.DEV && import.meta.env.MODE !== 'test' ? 'http://localhost:8000' : '')
 
 export interface CreateRequestBody {
   name: string
@@ -100,4 +102,22 @@ export async function getMyRequests(phone: string): Promise<ServiceRequest[]> {
   if (!res.ok) return []
   const data = await res.json().catch(() => [])
   return Array.isArray(data) ? data : []
+}
+
+export interface Analytics {
+  requests_per_day: number[]
+  total_requests: number
+  total_providers: number
+  last_week_requests: number
+  goals_done: number
+  goals_total: number
+  days_with_requests: boolean[]
+}
+
+export async function getAnalytics(): Promise<Analytics | null> {
+  if (!BASE) return null
+  const res = await fetch(`${BASE}/analytics`)
+  if (!res.ok) return null
+  const data = await res.json().catch(() => null)
+  return data as Analytics
 }

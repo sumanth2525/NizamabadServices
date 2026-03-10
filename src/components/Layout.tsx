@@ -7,44 +7,76 @@ import type { ReactNode } from 'react'
 const navItems = [
   { path: '/', icon: Home, labelEn: 'Home', labelTe: 'హోమ్' },
   { path: '/support', icon: MessageCircle, labelEn: 'Support', labelTe: 'సపోర్ట్' },
-  { path: '/requests', icon: FileText, labelEn: 'My Requests', labelTe: 'నా అభ్యర్థనలు' },
+  { path: '/requests', icon: FileText, labelEn: 'Request', labelTe: 'అభ్యర్థన' },
   { path: '/menu', icon: Menu, labelEn: 'Menu', labelTe: 'మెను' },
 ]
 
 export default function Layout({ children }: { children: ReactNode }) {
   const location = useLocation()
   const { lang, setLang, t } = useI18n()
+  const isHome = location.pathname === '/'
 
   return (
     <div className="app-shell flex flex-col bg-gradient-to-b from-slate-50/80 to-slate-100/80">
-      <header className="sticky top-0 z-20 flex items-center justify-between gap-2 px-4 py-3 bg-white/95 backdrop-blur-sm border-b border-slate-200/80 shadow-sm">
-        <h1 className="text-lg font-bold text-slate-800 truncate tracking-tight min-w-0">
-          Nizamabad Services
-        </h1>
-        <div className="flex items-center gap-2 shrink-0">
+      {/* Desktop: top bar with logo, nav links, area, lang */}
+      <header className="hidden md:flex sticky top-0 z-20 items-center justify-between gap-6 px-6 py-3 bg-white/95 backdrop-blur-sm border-b border-slate-200/80 shadow-sm">
+        <Link to="/" className="flex items-center gap-2 shrink-0">
+          <img src="/logo.svg" alt="" className="h-9 w-9 rounded-lg" />
+          <span className="text-lg font-bold text-slate-800 tracking-tight whitespace-nowrap">Nizamabad services</span>
+        </Link>
+        <nav className="flex items-center gap-1">
+          {navItems.map(({ path, icon: Icon, labelEn, labelTe }) => {
+            const active = location.pathname === path || (path === '/' && location.pathname === '/')
+            return (
+              <Link
+                key={path}
+                to={path}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                  active ? 'text-[var(--color-brand)] bg-[var(--color-brand-muted)]' : 'text-slate-600 hover:text-slate-800 hover:bg-slate-100'
+                }`}
+              >
+                <Icon size={20} strokeWidth={active ? 2.5 : 2} />
+                {t(labelEn, labelTe)}
+              </Link>
+            )
+          })}
+        </nav>
+        <div className="flex items-center gap-3 shrink-0">
           <AreaSelector variant="header" />
-          <div className="flex items-center rounded-xl bg-slate-100 p-1">
           <button
             type="button"
-            onClick={() => setLang('en')}
-            className={`min-h-[36px] min-w-[44px] px-3 py-1.5 text-sm font-semibold rounded-lg transition-all ${lang === 'en' ? 'bg-white text-[var(--color-brand)] shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+            onClick={() => setLang(lang === 'en' ? 'te' : 'en')}
+            className="min-h-[36px] px-4 rounded-full bg-slate-100 text-xs font-semibold text-slate-700 hover:bg-slate-200 transition-colors"
           >
-            EN
+            {lang === 'en' ? 'Telugu' : 'English'}
           </button>
-          <button
-            type="button"
-            onClick={() => setLang('te')}
-            className={`min-h-[36px] min-w-[44px] px-3 py-1.5 text-sm font-semibold rounded-lg transition-all ${lang === 'te' ? 'bg-white text-[var(--color-brand)] shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
-          >
-            TE
-          </button>
-          </div>
         </div>
       </header>
 
-      <main className="flex-1 overflow-auto pb-24 min-h-0">{children}</main>
+      {/* Mobile: header only when not on home */}
+      {!isHome && (
+        <header className="md:hidden sticky top-0 z-20 flex items-center justify-between gap-2 px-4 py-3 bg-white/95 backdrop-blur-sm border-b border-slate-200/80 shadow-sm">
+          <div className="flex items-center gap-2 min-w-0">
+            <img src="/logo.svg" alt="" className="h-8 w-8 shrink-0 rounded-lg" />
+            <h1 className="text-lg font-bold text-slate-800 truncate tracking-tight">Nizamabad services</h1>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <AreaSelector variant="header" />
+            <button
+              type="button"
+              onClick={() => setLang(lang === 'en' ? 'te' : 'en')}
+              className="min-h-[32px] px-4 rounded-full bg-slate-100 text-xs font-semibold text-slate-700 hover:bg-slate-200 transition-colors"
+            >
+              {lang === 'en' ? 'Telugu' : 'English'}
+            </button>
+          </div>
+        </header>
+      )}
 
-      <nav className="fixed bottom-0 left-0 right-0 z-20 flex items-center justify-around gap-1 py-2 px-2 bg-white/95 backdrop-blur-sm border-t border-slate-200/80 shadow-[0_-2px_10px_rgba(0,0,0,0.04)] safe-area-inset">
+      <main className="flex-1 overflow-auto pb-24 md:pb-8 min-h-0">{children}</main>
+
+      {/* Mobile only: bottom nav */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-20 flex items-center justify-around gap-1 py-2 px-2 bg-white/95 backdrop-blur-sm border-t border-slate-200/80 shadow-[0_-2px_10px_rgba(0,0,0,0.04)] safe-area-inset">
         {navItems.map(({ path, icon: Icon, labelEn, labelTe }) => {
           const active = location.pathname === path || (path === '/' && location.pathname === '/')
           return (
@@ -68,7 +100,7 @@ export default function Layout({ children }: { children: ReactNode }) {
         href={`https://wa.me/${(import.meta.env.VITE_WHATSAPP_NUMBER || '919876543210').replace(/\D/g, '')}?text=${encodeURIComponent(import.meta.env.VITE_WHATSAPP_MESSAGE || 'Hi, I need help with a service request from Nizamabad Services app.')}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="fixed bottom-24 right-4 z-10 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#25D366] text-white shadow-lg shadow-green-500/30 hover:bg-[#20bd5a] hover:scale-105 active:scale-95 transition-all duration-200"
+        className="fixed bottom-24 md:bottom-8 right-4 md:right-6 z-10 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#25D366] text-white shadow-lg shadow-green-500/30 hover:bg-[#20bd5a] hover:scale-105 active:scale-95 transition-all duration-200"
         aria-label="Chat on WhatsApp"
       >
         <svg viewBox="0 0 24 24" className="h-7 w-7" fill="currentColor">

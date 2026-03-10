@@ -39,10 +39,13 @@ alter table public.requests enable row level security;
 alter table public.providers enable row level security;
 
 -- Policy: service role has full access (backend uses service_role key)
+-- WITH CHECK is required for INSERT/UPDATE to be allowed.
 create policy "Service role full access requests"
   on public.requests for all
-  using (auth.role() = 'service_role');
+  using (auth.role() = 'service_role')
+  with check (auth.role() = 'service_role');
 
 create policy "Service role full access providers"
   on public.providers for all
-  using (auth.role() = 'service_role');
+  using (auth.role() = 'service_role')
+  with check (auth.role() = 'service_role');

@@ -1,6 +1,6 @@
-import { MessageCircle, Mail, Facebook, ChevronRight } from 'lucide-react'
+import { MessageCircle, Mail, Facebook, Instagram, ChevronRight } from 'lucide-react'
 import { useI18n } from '../i18n'
-import { SUPPORT_EMAIL, FACEBOOK_URL, HOURS, AREA_TAGLINE, WHATSAPP_MESSAGE } from '../data/constants'
+import { SUPPORT_EMAIL, FACEBOOK_URL, INSTAGRAM_URL, HOURS, AREA_TAGLINE, WHATSAPP_MESSAGE } from '../data/constants'
 
 export default function Support() {
   const { t } = useI18n()
@@ -34,6 +34,15 @@ export default function Support() {
       iconColor: 'text-blue-600',
       title: 'Facebook',
       subtitle: t('Follow us', 'మమ్మల్ని ఫాలో చేయండి'),
+    },
+    {
+      href: INSTAGRAM_URL,
+      external: true,
+      icon: Instagram,
+      iconBg: 'bg-pink-500/10',
+      iconColor: 'text-pink-600',
+      title: 'Instagram',
+      subtitle: t('See stories & updates', 'స్టోరీస్ మరియు అప్‌డేట్స్ చూడండి'),
     },
   ]
 
