@@ -2,9 +2,8 @@
 
 :root {
   --font-sans: "DM Sans", system-ui, sans-serif;
-  /* Softer, more pastel primary inspired by the profile screen */
-  --color-brand: #a855f7;
-  --color-brand-dark: #7c3aed;
+  --color-brand: #6F22D2;
+  --color-brand-dark: #5b1bb8;
   --color-brand-muted: rgba(168, 85, 247, 0.12);
   --color-surface: #f5ecff;
   --color-surface-card: #fefbff;
@@ -25,7 +24,7 @@
 body {
   font-family: var(--font-sans);
   color: var(--body-text);
-  background: radial-gradient(circle at top left, #fce7ff 0%, #f5ecff 35%, #efe9ff 70%, #e5e7f5 100%);
+  background: #f8fafc;
   min-height: 100dvh;
   line-height: 1.5;
 }
@@ -174,3 +173,12 @@ body {
 .badge-pending { background: #fef3c7; color: #92400e; }
 .badge-completed { background: #d1fae5; color: #065f46; }
 .badge-default { background: #f1f5f9; color: #475569; }
+
+/* Hide scrollbar for horizontal category scroll */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
